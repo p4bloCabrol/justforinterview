@@ -23,7 +23,7 @@ Each component's spec lives in `docs/specs/<Component>.md`; the visual system in
 - Code, comments, tests, commit messages and PR descriptions: English.
 - Docs (`docs/`, READMEs): bilingual in the same file, English first, then `# … — Español`.
 - Chat with Pablo: Rioplatense Spanish.
-- Components never hardcode user-facing strings: labels and messages come in via props, so they are i18n-ready. The demo gets its own `I18nProvider` (built by Pablo, after Tabs); no i18n library.
+- Components never hardcode user-facing strings: labels and messages come in via props, so they are i18n-ready. Storybook has a theme and locale toolbar; the `I18nProvider` (built by Pablo, after Tabs) gets wired into its decorator. No i18n library.
 
 ## Repo rules
 
@@ -32,4 +32,5 @@ Each component's spec lives in `docs/specs/<Component>.md`; the visual system in
 - `tokens.css` is generated: don't edit it; tokens change in the DS and get regenerated.
 - No `eslint-disable` for `react-hooks/exhaustive-deps`.
 - Tests with `@testing-library/user-event` and role/label queries, never by class.
+- Every component ships stories (`<Component>.stories.tsx`); `src/demo/` is reserved for the assistant chat app at the end.
 - One branch and one PR per component (`feat/<component>`). Full process in `docs/process/`.

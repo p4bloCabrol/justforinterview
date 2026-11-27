@@ -19,7 +19,7 @@ A design system of ten React components built by hand, one at a time, each chose
 | Build | Vite + React 18/19 + TypeScript `strict` | Fast, no magic |
 | Tests | Vitest + @testing-library/react + @testing-library/user-event | `user-event` simulates real keyboard interaction, which is half the work |
 | A11y | `axe-core` with the `src/test/axe.ts` helper | One `expect(await axeViolations(container)).toEqual([])` per component |
-| Demo | One page per component in `src/demo/` | For testing by hand with a keyboard and a screen reader |
+| Stories | Storybook 10, one `<Component>.stories.tsx` per component | For testing by hand with a keyboard and a screen reader; theme and locale from the toolbar; axe in the a11y panel |
 | Lint | ESLint with `eslint-plugin-react-hooks` and `jsx-a11y` | `exhaustive-deps` will flag several of the bugs these exercises are designed to surface |
 
 Structure: `src/components/<Component>/{<Component>.tsx, <Component>.test.tsx, index.ts}`. One branch and one PR per component: the PR is the unit of review.
@@ -91,7 +91,7 @@ Un sistema de diseño de diez componentes React hechos a mano, uno por vez, cada
 | Build | Vite + React 18/19 + TypeScript `strict` | Rápido, sin magia |
 | Tests | Vitest + @testing-library/react + @testing-library/user-event | `user-event` simula teclado de verdad, que es la mitad del trabajo |
 | A11y | `axe-core` con el helper `src/test/axe.ts` | Un `expect(await axeViolations(container)).toEqual([])` por componente |
-| Demo | Una página por componente en `src/demo/` | Para probar a mano con teclado y lector de pantalla |
+| Stories | Storybook 10, un `<Componente>.stories.tsx` por componente | Para probar a mano con teclado y lector de pantalla; tema e idioma desde la toolbar; axe en el panel a11y |
 | Lint | ESLint con `eslint-plugin-react-hooks` y `jsx-a11y` | `exhaustive-deps` te va a marcar varios de los bugs que estos ejercicios buscan |
 
 Estructura: `src/components/<Componente>/{<Componente>.tsx, <Componente>.test.tsx, index.ts}`. Una rama y un PR por componente: el PR es la unidad de revisión.

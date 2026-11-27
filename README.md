@@ -21,10 +21,9 @@ Ten React components built by hand, one at a time, each chosen for the specific 
 
 ```bash
 npm install
-npm run dev        # demo
+npm run storybook  # stories (http://localhost:6006)
 npm test           # tests
-npm run lint
-npm run typecheck
+npm run check      # gate: typecheck, lint, test, build
 ```
 
 ## Where things live
@@ -60,10 +59,9 @@ Diez componentes React hechos a mano, uno por vez, cada uno elegido por la dific
 
 ```bash
 npm install
-npm run dev        # demo
+npm run storybook  # stories (http://localhost:6006)
 npm test           # tests
-npm run lint
-npm run typecheck
+npm run check      # gate: typecheck, lint, test, build
 ```
 
 ## Dónde está cada cosa

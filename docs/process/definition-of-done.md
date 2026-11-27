@@ -8,7 +8,7 @@
 - [ ] At least one ADR in `docs/adr/`.
 - [ ] Claude Code review done; every comment accepted or rejected, with the reason, in the PR.
 - [ ] The spec's interview questions answered in the PR description, in my own words.
-- [ ] Section added to the demo (`src/demo/`).
+- [ ] Stories in `<Component>.stories.tsx`: every variant and state, green in the Storybook a11y panel, in both themes and locales.
 
 ---
 
@@ -22,4 +22,4 @@
 - [ ] Al menos un ADR en `docs/adr/`.
 - [ ] Review de Claude Code hecha; cada observación aceptada o rechazada con motivo en el PR.
 - [ ] Preguntas de entrevista de la ficha respondidas en la descripción del PR, en mis palabras.
-- [ ] Sección agregada en la demo (`src/demo/`).
+- [ ] Stories en `<Component>.stories.tsx`: cada variante y estado, en verde en el panel a11y de Storybook, en ambos temas e idiomas.
