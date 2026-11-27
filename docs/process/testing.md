@@ -1,4 +1,25 @@
-# Estrategia de testing
+# Testing strategy
+
+**English** · [Español](#español)
+
+| What | With | Example |
+| --- | --- | --- |
+| Visible behavior | `@testing-library/react` + `user-event` | `await user.keyboard('{ArrowRight}')` and assert `aria-selected` |
+| Hooks without UI | `renderHook` | `useControllableState`, `useCombobox`, `useVirtualizer` |
+| Pure logic | Plain Vitest | The Toast reducer |
+| Timers | `vi.useFakeTimers()` + `user-event` with `advanceTimers` | Tooltip, Toast |
+| Accessibility | `axeViolations(container)` | One test per component, in its most complex state |
+| Types | `// @ts-expect-error` in a test | Button without a label doesn't compile; single-mode Accordion with an array doesn't compile |
+
+Rules: query by role and accessible name (`getByRole('switch', { name: 'Dark mode' })`), never by class or test-id unless there's no other way. One test per acceptance criterion, named with the criterion's text.
+
+With fake timers, create the user like this: `userEvent.setup({ advanceTimers: vi.advanceTimersByTime })`.
+
+---
+
+<a id="español"></a>
+
+# Estrategia de testing — Español
 
 | Qué | Con qué | Ejemplo |
 | --- | --- | --- |

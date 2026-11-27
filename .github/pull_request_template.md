@@ -1,15 +1,15 @@
-## Qué
-<!-- Componente y alcance -->
+## What
+<!-- Component and scope -->
 
-## Criterios de aceptación
-<!-- Copiá el checklist de docs/specs/<Componente>.md y tildá -->
+## Acceptance criteria
+<!-- Copy the checklist from docs/specs/<Component>.md and tick it -->
 
-## Decisiones
-<!-- Links a docs/adr/ -->
+## Decisions
+<!-- Links to docs/adr/ -->
 
-## Review del agente
-| Observación | Aceptada / rechazada | Por qué |
+## Agent review
+| Finding | Accepted / rejected | Why |
 | --- | --- | --- |
 
-## Preguntas de entrevista
-<!-- Respuestas en mis palabras -->
+## Interview questions
+<!-- Answers in my own words -->

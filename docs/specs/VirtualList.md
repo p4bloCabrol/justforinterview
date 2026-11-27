@@ -1,5 +1,79 @@
 # VirtualList
 
+**English** · [Español](#español)
+
+A list that renders only the visible rows of a dataset with tens of thousands of items, while preserving native scrolling, the correct total height and keyboard navigation.
+
+## The challenge
+
+Performance as a design problem: measuring the viewport, computing the visible range from `scrollTop`, positioning rows without triggering layout, and making scrolling feel native. The fixed-height version is the exercise; the variable-height one is the bonus that sets seniors apart.
+
+## Expected API
+
+```tsx
+<VirtualList
+  items={logs}                 // 50,000
+  itemHeight={36}              // fixed number; bonus: (index) => number, or measurement
+  height={320}                 // or fill the container (ResizeObserver)
+  overscan={5}
+  getKey={(log) => log.id}
+  renderItem={(log, index, style) => <Row style={style} log={log} />}
+/>
+```
+
+```ts
+function useVirtualizer(opts: { count: number; itemHeight: number; overscan: number;
+  scrollRef: React.RefObject<HTMLElement> }): {
+  totalHeight: number;
+  virtualItems: { index: number; start: number }[];
+  scrollToIndex(index: number, align?: 'start' | 'center' | 'end' | 'auto'): void;
+};
+```
+
+## Requirements
+
+- The logic lives in `useVirtualizer` (headless, like the Combobox); the component only renders.
+- A container with `overflow: auto` and a child of height `totalHeight`; rows with `position: absolute` and `transform: translateY(start)` (not `top`: justify why).
+- Range: `start = floor(scrollTop / h) - overscan`, `end = ceil((scrollTop + viewport) / h) + overscan`, clamped.
+- Read `scrollTop` in the (passive) `scroll` event and store only what's needed in state: a scroll that doesn't change the range must **not** re-render.
+- Viewport height via `ResizeObserver` (with cleanup).
+- `scrollToIndex` to jump to a row (and for keyboard support).
+- Stable keys via `getKey`, never the index.
+- Bonus: variable heights measured with a per-row `ResizeObserver`, an offset cache, and binary search for the first visible row.
+
+## Accessibility and keyboard
+
+- `role="list"` / `role="listitem"` (or `listbox`/`option` if selectable) with `aria-setsize` and `aria-posinset` on each row: the screen reader has to know there are 50,000 even if only 15 are in the DOM.
+- Focusable container; ↑ ↓ move an active row, PageUp/PageDown move one screen, Home/End go to the ends, always via `scrollToIndex`.
+
+## Acceptance criteria
+
+- [ ] With 50,000 items, the DOM never has more than `visible + 2 × overscan` rows.
+- [ ] The scrollbar reflects the total height (`items.length × itemHeight`).
+- [ ] Scrolling 10px within the same row doesn't trigger a render (count renders in a test or with the Profiler).
+- [ ] `scrollToIndex(25000, 'center')` leaves that row in the middle.
+- [ ] End goes to the last item and it's visible.
+- [ ] Changing the container's `height` recomputes the range without reloading.
+- [ ] Each row has a correct `aria-posinset` and `aria-setsize` = total.
+
+## Interview questions
+
+- Why isn't `React.memo` on each row enough for 50,000 items?
+- `transform` vs. `top` for positioning? What is compositing in the browser?
+- What problems does virtualization introduce? (the browser's Ctrl+F, accessibility, scroll restoration, printing)
+- How would you approach variable heights? Why can measuring before painting cause scroll jumps, and how do you fix it?
+- When would you use `content-visibility: auto` instead of virtualizing?
+
+## Visual
+
+`surface` container with a `border` border and `radius-lg`. 36px rows with `space-4` padding, `border` divider, index in mono `caption` `text-subtle`. Active row in `surface-muted` with visible focus.
+
+---
+
+<a id="español"></a>
+
+# VirtualList — Español
+
 Una lista que renderiza sólo las filas visibles de un dataset de decenas de miles de items, manteniendo el scroll nativo, la altura total correcta y la navegación por teclado.
 
 ## La dificultad

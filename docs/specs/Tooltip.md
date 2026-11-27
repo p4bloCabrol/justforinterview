@@ -1,5 +1,76 @@
 # Tooltip
 
+**English** · [Español](#español)
+
+A floating label that appears on hover or focus of its trigger, positions itself by measuring with refs, and flips if it doesn't fit in the viewport.
+
+## The challenge
+
+Measuring the DOM and positioning before paint (`useLayoutEffect`) without flicker, and handling open and close timers that cancel each other correctly.
+
+## Expected API
+
+```tsx
+<Tooltip content="Copy to clipboard" side="top" delay={400}>
+  <Button aria-label="Copy">⧉</Button>
+</Tooltip>
+```
+
+```ts
+interface TooltipProps {
+  content: React.ReactNode;
+  children: React.ReactElement;   // a single element that accepts a ref and handlers
+  side?: 'top' | 'bottom' | 'left' | 'right';  // default 'top'
+  offset?: number;                // default 8
+  delay?: number;                 // open delay, default 400ms
+  closeDelay?: number;            // close delay, default 100ms
+}
+```
+
+## Requirements
+
+- The trigger is the child: you need its ref and its handlers **without overriding** the ones it already has (compose `onMouseEnter`, `onFocus`, etc., and the ref: if the child already has a ref, both must work).
+- Open on mouseenter and focus (with delay); close on mouseleave, blur and Escape (with closeDelay; Escape is immediate).
+- If the mouse leaves and comes back within closeDelay, it doesn't flicker: the close is cancelled.
+- Position: `getBoundingClientRect()` of the trigger and of the tooltip in `useLayoutEffect`, `position: fixed`, centered on the chosen side. If it overflows the viewport, **flip** to the opposite side; additionally, clamp horizontally to 8px from the edge.
+- Recompute on scroll and resize while open (cleaning up the listeners).
+- All timers are cleared on unmount. No `setState` on an unmounted component.
+- Rendered in a portal.
+
+## Accessibility and keyboard
+
+- The tooltip has `role="tooltip"` and an id; the trigger has `aria-describedby` pointing to that id **while it's visible**.
+- It also appears on keyboard focus; Escape closes it without moving focus.
+- Don't use it for essential information or with interactive content (that's a popover).
+
+## Acceptance criteria
+
+- [ ] With fake timers: it doesn't appear before `delay`; it appears after.
+- [ ] Leaving and coming back before `closeDelay` keeps it open.
+- [ ] The child's own `onMouseEnter` still gets called.
+- [ ] The child's own `ref` still receives the element.
+- [ ] With the trigger flush against the top edge and `side="top"`, it renders below.
+- [ ] Unmounting with a pending timer throws no warnings or errors.
+- [ ] No visible position jump (the first paint is already in place).
+
+## Interview questions
+
+- What's the timing difference between `useEffect` and `useLayoutEffect`? What do you see if you measure in `useEffect`?
+- How do you compose refs? (a `mergeRefs` function, callback ref)
+- `cloneElement` vs. wrapping in a `<span>`? Costs of each.
+- Why `position: fixed` and not `absolute` inside the portal?
+- How does it behave on touch, where there's no hover?
+
+## Visual
+
+`tooltip-bg` background, `tooltip-fg` text in `caption` style, `space-1`/`space-2` padding, `radius-sm`, `shadow-popover`, max width 240px, `z-tooltip`, no pointer events.
+
+---
+
+<a id="español"></a>
+
+# Tooltip — Español
+
 Una etiqueta flotante que aparece al hover o foco de su disparador, se posiciona midiendo con refs y se da vuelta si no entra en el viewport.
 
 ## La dificultad

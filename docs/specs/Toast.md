@@ -1,5 +1,77 @@
 # Toast
 
+**English** · [Español](#español)
+
+Ephemeral notifications triggered from anywhere in the app via a hook, managed by a provider with a `useReducer` queue, with auto-dismiss that pauses on hover.
+
+## The challenge
+
+Global state without a library (provider + Context), a queue modeled as a reducer, and timers that read stale state: the classic stale closure.
+
+## Expected API
+
+```tsx
+<ToastProvider max={3} duration={5000}>
+  <App />
+</ToastProvider>
+
+const toast = useToast();
+const id = toast.show({ title: 'Saved', description: 'Your changes were applied.', tone: 'success' });
+toast.dismiss(id);
+```
+
+```ts
+type ToastTone = 'neutral' | 'success' | 'error';
+interface ToastOptions { title: string; description?: string; tone?: ToastTone; duration?: number /* ms, Infinity = never closes */ }
+
+type ToastAction =
+  | { type: 'ADD'; toast: Toast }
+  | { type: 'DISMISS'; id: string }
+  | { type: 'PAUSE'; id: string }
+  | { type: 'RESUME'; id: string };
+```
+
+## Requirements
+
+- A pure reducer, tested without React: adds, removes, respects `max` (toasts over the limit wait **in a queue** and come in when a slot frees up; they are not discarded).
+- `useToast()` outside the provider throws a clear error.
+- The object returned by `useToast` is stable across renders (same reference): a `useEffect(() => …, [toast])` must not fire in a loop.
+- Each toast has its own timer. **Hover pauses** it, and on leave it **resumes with the remaining time**, rather than restarting. Think about where you store the remaining time, and why a `setTimeout` that closes over its render's state is the trap.
+- Dismissing manually cancels its timer.
+- The region lives in a portal, at `z-toast`, above an open modal.
+
+## Accessibility and keyboard
+
+- The region is a live region: `role="status"` with `aria-live="polite"` for neutral/success; error toasts use `role="alert"` (assertive). Mount the region once, empty: if you mount the live region together with the message, many screen readers won't announce it.
+- Close button with `aria-label="Close notification"`.
+- Bonus: F8 moves focus to the region; focus inside also pauses.
+
+## Acceptance criteria
+
+- [ ] With `max={3}` and 5 `show()` calls: 3 are visible; closing one brings in the 4th.
+- [ ] With fake timers: it closes after `duration` ms.
+- [ ] Hover at 3s of 5s, wait 10s, leave: it closes 2s later.
+- [ ] The `toast` from `useToast()` keeps the same reference across renders.
+- [ ] The reducer has unit tests with no rendering.
+- [ ] An `error` toast is inside an element with `role="alert"`.
+
+## Interview questions
+
+- What is a stale closure? Show the bug with `setTimeout` and `useState`, and two ways to fix it.
+- Why `useReducer` here and not several `useState`s?
+- Context for global state: when is it enough, and when does it lead to app-wide re-renders? How do you split dispatch from state?
+- How would you make `toast.show()` callable outside React (from a services module)? (external store + `useSyncExternalStore`)
+
+## Visual
+
+Region at the bottom right, 320px, `space-2` gap. Toast `surface`, `radius-md`, `shadow-popover`, `space-3`/`space-4` padding. Title in `label` with a status dot (`success`, `danger` or `text-muted`), description in `caption` `text-muted`.
+
+---
+
+<a id="español"></a>
+
+# Toast — Español
+
 Notificaciones efímeras disparadas desde cualquier parte de la app con un hook, manejadas por un provider con una cola en `useReducer`, con auto-cierre que se pausa en hover.
 
 ## La dificultad

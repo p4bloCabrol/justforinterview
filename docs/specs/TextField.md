@@ -1,5 +1,69 @@
 # TextField
 
+**English** · [Español](#español)
+
+A text field with a label, help text and an error, that works controlled or uncontrolled and wires everything together through ids generated with `useId`.
+
+## The challenge
+
+Really understanding controlled vs. uncontrolled (who owns the value), and wiring up accessibility: an associated label, and a description and error announced by the screen reader.
+
+## Expected API
+
+```ts
+interface TextFieldProps
+  extends Omit<React.ComponentPropsWithoutRef<'input'>, 'size'> {
+  label: string;              // required: no field without a label
+  hideLabel?: boolean;        // label visually hidden but still accessible
+  description?: string;       // helper text
+  error?: string;             // if present, the field is invalid
+  // value / defaultValue / onChange: the input's native ones
+}
+// ref → the <input>
+```
+
+## Requirements
+
+- `id`: if the consumer passes one, use it; otherwise `useId()`. From that id you derive `${id}-description` and `${id}-error`.
+- Always `<label htmlFor={id}>`. `hideLabel` hides it with a *visually-hidden* class, never with `display:none`.
+- `aria-describedby` combines the description and the error (whichever exist, space-separated).
+- With `error`: `aria-invalid="true"` on the input and the message in `.jfi-error`.
+- `required` shows the `.jfi-required` asterisk (with `aria-hidden`: the native `required` already announces it).
+- Controlled (`value` + `onChange`) and uncontrolled (`defaultValue`) both work without warnings. Don't copy `value` into an internal `useState`.
+
+## Accessibility and keyboard
+
+- `getByLabelText('Email')` finds the input.
+- The error is announced when it appears: consider whether `aria-describedby` is enough or a live region is needed, and justify it.
+
+## Acceptance criteria
+
+- [ ] Two TextFields on the same page get different ids without passing `id`.
+- [ ] `getByRole('textbox', { name: 'Email' })` works, including with `hideLabel`.
+- [ ] With `description` and `error`, `aria-describedby` contains both ids and both elements exist.
+- [ ] Controlled mode: if the parent ignores `onChange`, the value doesn't change when typing.
+- [ ] Uncontrolled mode: typing works and `ref.current.value` reflects it.
+- [ ] The "changing an uncontrolled input to be controlled" warning doesn't appear in any test.
+- [ ] axe reports no violations with an error visible.
+
+## Interview questions
+
+- What does it mean for an input to be controlled? What happens if you pass `value` without `onChange`?
+- Why `useId` and not `Math.random()` or a global counter? (SSR and hydration)
+- When do you prefer uncontrolled? (large forms, `FormData`, react-hook-form)
+- Why does the controlled-to-uncontrolled warning appear when `value` becomes `undefined`?
+- `aria-describedby` vs. `aria-errormessage`?
+
+## Visual
+
+Label in `label` style, `space-1` gap. Input 32px, `radius-sm`, `border-control` border, `surface` background, `text-subtle` placeholder. Invalid: `danger` border. Help text in `caption` `text-muted`; error in `caption` `danger`.
+
+---
+
+<a id="español"></a>
+
+# TextField — Español
+
 Un campo de texto con label, texto de ayuda y error, que funciona controlado o no controlado y conecta todo por ids generados con `useId`.
 
 ## La dificultad
