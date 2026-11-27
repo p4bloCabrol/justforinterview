@@ -39,9 +39,10 @@ When the PR adds a state model, data flow or component composition (controllable
 portal), add a small ```mermaid block (`flowchart` or `stateDiagram-v2`, ≤ 12 nodes). GitHub renders it;
 no image needed. Skip it for docs/config PRs.
 
-## 5. Screenshots
+## 5. Screenshots (component PRs only)
 
-Only when `*.stories.tsx` or `src/components/**` changed.
+Only for component PRs: `feat/<component>` or `fix/<component>` branches that change `src/components/**`.
+Docs, tooling, config and dependency PRs never get screenshots; skip this whole step.
 
 1. `npm run build-storybook`.
 2. Stories touched by the PR:
