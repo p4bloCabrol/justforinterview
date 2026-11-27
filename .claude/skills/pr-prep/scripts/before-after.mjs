@@ -3,7 +3,7 @@
 // CLI: node before-after.mjs --base main --ids a,b [--themes light,dark] [--out .pr-prep/compare]
 // Prints a JSON array: [{ id, theme, file, status: 'changed' | 'new' }]
 import { execFileSync } from 'node:child_process';
-import { existsSync, rmSync, symlinkSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, rmSync, symlinkSync, readFileSync, unlinkSync } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -27,12 +27,13 @@ async function compose(pairs, outDir) {
     for (const p of pairs) {
       const img = f => `data:image/png;base64,${readFileSync(f).toString('base64')}`;
       const col = (label, f) => `<figure><figcaption>${label}</figcaption>${f ? `<img src="${img(f)}">` : '<div class="none">Not in base</div>'}</figure>`;
-      await page.setContent(`<html><body style="margin:0;padding:16px;background:#e5e5e5;font:500 13px system-ui;display:flex;gap:16px;width:max-content">
-        <style>figure{margin:0}figcaption{margin-bottom:8px;color:#404040}img{display:block;max-width:600px;border-radius:6px}
+      await page.setContent(`<html><body style="margin:0">
+        <style>#frame{display:inline-flex;align-items:flex-start;gap:16px;padding:16px;background:#e5e5e5;font:500 13px system-ui}
+        figure{margin:0}figcaption{margin-bottom:8px;color:#404040}img{display:block;max-width:600px;border-radius:6px}
         .none{width:240px;height:80px;display:grid;place-items:center;color:#737373;border:1px dashed #8a8a8a;border-radius:6px}</style>
-        ${col('Before (base)', p.before)}${col(p.before ? 'After' : 'New', p.after)}</body></html>`);
+        <div id="frame">${col('Before (base)', p.before)}${col(p.before ? 'After' : 'New', p.after)}</div></body></html>`);
       const file = path.join(outDir, `${p.id}--${p.theme}-compare.png`);
-      await page.locator('body').screenshot({ path: file });
+      await page.locator('#frame').screenshot({ path: file });
       results.push({ id: p.id, theme: p.theme, file, status: p.before ? 'changed' : 'new' });
     }
   } finally {
@@ -50,16 +51,28 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const themes = (a.themes ?? 'light,dark').split(',');
   const out = path.resolve(a.out ?? path.join(work, 'compare'));
 
-  if (existsSync(baseTree)) run('git', ['worktree', 'remove', '--force', baseTree], root);
+  const link = path.join(baseTree, 'node_modules');
+  // Remove the base worktree. The node_modules link is unlinked first (never recursed into: it
+  // points at the real node_modules), then the folder and git's worktree record are cleaned up.
+  const cleanBase = () => {
+    try { if (lstatSync(link).isSymbolicLink()) unlinkSync(link); } catch { /* no link */ }
+    try {
+      execFileSync('git', ['worktree', 'remove', '--force', baseTree], { cwd: root, stdio: 'ignore' });
+    } catch { /* not a worktree */ }
+    rmSync(baseTree, { recursive: true, force: true });
+    run('git', ['worktree', 'prune'], root);
+  };
+
+  cleanBase();
   run('git', ['worktree', 'add', '--detach', baseTree, a.base], root);
   try {
     // Reuse HEAD's node_modules (a junction on Windows): fast, and fine while deps are close.
-    symlinkSync(path.join(root, 'node_modules'), path.join(baseTree, 'node_modules'), 'junction');
+    symlinkSync(path.join(root, 'node_modules'), link, 'junction');
     run('npx', ['storybook', 'build', '--quiet', '-o', path.join(work, 'base-static')], baseTree);
   } catch {
     console.error('Base has no Storybook build; every story will be reported as new.');
   } finally {
-    run('git', ['worktree', 'remove', '--force', baseTree], root);
+    cleanBase();
   }
   run('npx', ['storybook', 'build', '--quiet', '-o', path.join(work, 'head-static')], root);
 
