@@ -1,5 +1,73 @@
 # Button
 
+**English** · [Español](#español)
+
+A button that behaves exactly like a native `<button>`, with variants, sizes and a loading state, and that passes any prop and the ref through to the real element.
+
+## The challenge
+
+Correctly typing a wrapper around a native element: extending its props without overriding them, passing the rest through with `...rest`, and forwarding the ref. It looks trivial, and it's exactly where craftsmanship shows the most.
+
+## Expected API
+
+```ts
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface ButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  variant?: ButtonVariant;   // default 'secondary'
+  size?: ButtonSize;         // default 'md'
+  loading?: boolean;         // shows a spinner, blocks clicks, keeps the width
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+}
+
+// React 18: forwardRef<HTMLButtonElement, ButtonProps>
+// React 19: ref as a regular prop — be ready to explain both
+```
+
+## Requirements
+
+- `type="button"` by default (not `submit`): a button inside a form must not submit it by accident. If the consumer passes `type`, theirs wins.
+- The consumer's `className` is **appended** to `jfi-btn`, not a replacement for it.
+- `onClick`, `aria-*`, `data-*`, `form`, etc. reach the `<button>` without you declaring them.
+- `loading`: shows `.jfi-spinner`, sets `aria-busy="true"` and `data-loading`, does **not** fire `onClick`, and focus is not lost (don't use `disabled` if you want it to remain focusable: think `aria-disabled`).
+- Variant and size are expressed as `data-variant` and `data-size` (the CSS reads them).
+
+## Accessibility and keyboard
+
+- It's a real `<button>`: Enter and Space come for free. Don't reimplement anything with a `div`.
+- Icon-only button: require `aria-label` (think about how to enforce it with types: a discriminated union).
+- Visible focus with the `focus` ring.
+
+## Acceptance criteria
+
+- [ ] `ref.current` is the `HTMLButtonElement` (test with `createRef`).
+- [ ] Without `type`, it renders `type="button"`; with `type="submit"`, it submits the form.
+- [ ] `className="x"` produces `class="jfi-btn x"`.
+- [ ] With `loading`, a click does not call `onClick` and the button stays in the tab order.
+- [ ] `<Button onClick>` accepts `(e: React.MouseEvent<HTMLButtonElement>) => void` without casts.
+- [ ] A button with no text and no `aria-label` does not compile (bonus).
+- [ ] axe reports no violations across the 4 variants.
+
+## Interview questions
+
+- What's the difference between `ComponentProps`, `ComponentPropsWithRef` and `ComponentPropsWithoutRef`?
+- Why did `forwardRef` exist, and what changed in React 19?
+- `disabled` or `aria-disabled` on a loading button? What does each one lose?
+- How would you build a polymorphic `asChild` or `as` prop, and what does it cost in terms of types?
+- Why does the order of `{...rest}` vs. your own props matter?
+
+## Visual
+
+Height 32px (`sm` 28, `lg` 40), `space-3` padding, `radius-sm`, `label` text style. Primary on `accent`/`accent-fg`, secondary `surface` with a `border-control` border, ghost with no background, danger on `danger`/`danger-fg`.
+
+---
+
+<a id="español"></a>
+
+# Button — Español
+
 Un botón que se comporta exactamente como un `<button>` nativo, con variantes, tamaños y estado de carga, y que deja pasar cualquier prop y la ref al elemento real.
 
 ## La dificultad
