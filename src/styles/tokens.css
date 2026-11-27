@@ -1,0 +1,93 @@
+/* JustForInterviews DS — generated from tokens.json (fuente: el artifact del DS). No editar a mano. */
+
+:root, [data-theme="light"] {
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-muted: #f4f4f5;
+  --border: #e5e5e5;
+  --border-control: #8a8a8a;
+  --text: #0a0a0a;
+  --text-muted: #525252;
+  --text-subtle: #737373;
+  --accent: #171717;
+  --accent-hover: #404040;
+  --accent-fg: #fafafa;
+  --focus: #2563eb;
+  --danger: #dc2626;
+  --danger-fg: #ffffff;
+  --success: #15803d;
+  --overlay: rgba(10, 10, 10, 0.4);
+  --tooltip-bg: #171717;
+  --tooltip-fg: #fafafa;
+  --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-muted: #1c1c1c;
+  --border: #262626;
+  --border-control: #6b6b6b;
+  --text: #fafafa;
+  --text-muted: #a3a3a3;
+  --text-subtle: #8a8a8a;
+  --accent: #fafafa;
+  --accent-hover: #d4d4d4;
+  --accent-fg: #0a0a0a;
+  --focus: #60a5fa;
+  --danger: #f87171;
+  --danger-fg: #0a0a0a;
+  --success: #4ade80;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --tooltip-bg: #fafafa;
+  --tooltip-fg: #0a0a0a;
+  --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-muted: #1c1c1c;
+    --border: #262626;
+    --border-control: #6b6b6b;
+    --text: #fafafa;
+    --text-muted: #a3a3a3;
+    --text-subtle: #8a8a8a;
+    --accent: #fafafa;
+    --accent-hover: #d4d4d4;
+    --accent-fg: #0a0a0a;
+    --focus: #60a5fa;
+    --danger: #f87171;
+    --danger-fg: #0a0a0a;
+    --success: #4ade80;
+    --overlay: rgba(0, 0, 0, 0.6);
+    --tooltip-bg: #fafafa;
+    --tooltip-fg: #0a0a0a;
+    --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    --shadow-modal: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+  --z-popover: 1000;
+  --z-modal: 1100;
+  --z-toast: 1200;
+  --z-tooltip: 1300;
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
