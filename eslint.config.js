@@ -6,7 +6,7 @@ import storybook from 'eslint-plugin-storybook';
 import globals from 'globals';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'storybook-static', '!.storybook'] },
+  { ignores: ['dist', 'node_modules', 'storybook-static', '.pr-prep', '!.storybook'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   jsxA11y.flatConfigs.recommended,
@@ -20,5 +20,10 @@ export default tseslint.config(
       // Exercise rule: never turn off exhaustive-deps. If it gets in the way, there's a design to revisit.
       'react-hooks/exhaustive-deps': 'error',
     },
+  },
+  {
+    // Node tooling scripts (skills). `document` appears inside Playwright page.evaluate callbacks.
+    files: ['.claude/**/*.mjs'],
+    languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 );
